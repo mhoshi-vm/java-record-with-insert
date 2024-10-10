@@ -21,33 +21,33 @@ public class DemoApplication {
 }
 
 @RestController
-class demoController{
+class DemoController{
 
 	private final JdbcAggregateTemplate jdbcAggregateTemplate;
-	private final hogeRepo hogeRepo;
+	private final HogeRepo hogeRepo;
 
-	public demoController(JdbcAggregateTemplate jdbcAggregateTemplate, com.example.demo.hogeRepo hogeRepo) {
+	public DemoController(JdbcAggregateTemplate jdbcAggregateTemplate, com.example.demo.HogeRepo hogeRepo) {
 		this.jdbcAggregateTemplate = jdbcAggregateTemplate;
 		this.hogeRepo = hogeRepo;
 	}
 
 	@GetMapping
-	List<hoge> getter(){
+	List<Hoge> getter(){
 		return hogeRepo.findAll();
 	}
 
 	@PostMapping
 	void poster(){
 		this.hogeRepo.findById(1).ifPresentOrElse(
-				hoge -> jdbcAggregateTemplate.update(new hoge(hoge.id(), "bbbb", new Foobar( "FOO", "BAR"))),
-				() -> jdbcAggregateTemplate.insert(new hoge(1, "aaa", new Foobar( "foo", "bar")))
+				hoge -> jdbcAggregateTemplate.update(new Hoge(hoge.id(), "bbbb", new Foobar( "FOO", "BAR"))),
+				() -> jdbcAggregateTemplate.insert(new Hoge(1, "aaa", new Foobar( "foo", "bar")))
 		);
 	}
 }
 
-interface hogeRepo extends ListCrudRepository<hoge, Integer>{}
+interface HogeRepo extends ListCrudRepository<Hoge, Integer>{}
 
-record hoge(
+record Hoge(
 		@Id
 		Integer id,
 		String hoge,
