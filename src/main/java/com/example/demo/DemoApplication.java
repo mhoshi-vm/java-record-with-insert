@@ -38,33 +38,21 @@ class demoController{
 
 	@PostMapping
 	void poster(){
-		jdbcAggregateTemplate.insert(new hoge(1, "aaa"));
-		this.hogeRepo.save(new hoge(1, "bbbb"));
+		this.hogeRepo.findById(1).ifPresentOrElse(
+				hoge -> jdbcAggregateTemplate.update(new hoge(hoge.id(), "bbbb", new Foobar( "FOO", "BAR"))),
+				() -> jdbcAggregateTemplate.insert(new hoge(1, "aaa", new Foobar( "foo", "bar")))
+		);
 	}
 }
 
 interface hogeRepo extends ListCrudRepository<hoge, Integer>{}
 
-/*
-interface WithInsert<T>{
-	T insert(T t);
-}
-
-class WithInsertImpl<T> implements WithInsert<T>{
-	private final JdbcAggregateTemplate template;
-
-	public WithInsertImpl(JdbcAggregateTemplate template) {
-		this.template = template;
-	}
-
-	@Override
-	public T insert(T t) {
-		return template.insert(t);
-	}
-}*/
-
 record hoge(
 		@Id
 		Integer id,
-		String hoge
+		String hoge,
+
+		Foobar foobar
 ){}
+
+record Foobar(String foo, String bar){}
